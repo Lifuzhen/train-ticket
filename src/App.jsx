@@ -1,15 +1,33 @@
-import React, {lazy, Suspense} from 'react';
+import React ,{Component, PureComponent, memo}from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-const About = lazy(()=> import('./About.jsx'));
+const Foo = memo(function Foo(props) {
+  console.log('Foo render');
+  return <div>{props.person.age}</div>;
+});
 
-class App extends React.Component{
+
+class App extends Component{
+  state = {
+    count: 0,
+    person:{
+      age:1,
+    }
+  };
+  callback=()=>{
+
+  };
   render() {
+    const person = this.state.person;
     return <div>
-      <Suspense fallback={<div>loading</div>}>
-        <About/>
-      </Suspense>
+      <button onClick={()=>{
+       person.age++;
+       this.setState({
+         count:this.state.count + 1,
+       })
+      }}>Add</button>
+      <Foo person={person} cb={this.callback}/>
     </div>
   }
 }
