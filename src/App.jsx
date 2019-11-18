@@ -1,34 +1,24 @@
-import React ,{Component, PureComponent, memo}from 'react';
-import logo from './logo.svg';
+import React, {useState} from 'react';
 import './App.css';
 
-const Foo = memo(function Foo(props) {
-  console.log('Foo render');
-  return <div>{props.person.age}</div>;
-});
+let id = 0;
 
+function App(props) {
+    const [count, setCount] = useState(()=>{
+        console.log("initial count");
+        return props.defaultCount || 0
+    });
 
-class App extends Component{
-  state = {
-    count: 0,
-    person:{
-      age:1,
-    }
-  };
-  callback=()=>{
-
-  };
-  render() {
-    const person = this.state.person;
     return <div>
-      <button onClick={()=>{
-       person.age++;
-       this.setState({
-         count:this.state.count + 1,
-       })
-      }}>Add</button>
-      <Foo person={person} cb={this.callback}/>
-    </div>
-  }
+        <button
+            type="button"
+            onClick={() => {
+                setCount(count + 1)
+            }}
+        >
+            Click({count})
+        </button>
+    </div>;
 }
+
 export default App;
