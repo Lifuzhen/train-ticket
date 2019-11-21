@@ -1,33 +1,26 @@
-import React, {useState, createContext, useContext} from 'react';
+import React, {useState, useMemo, memo, useCallback} from 'react';
 import './App.css';
 
-const CountContext = createContext();
-
-class Foo extends React.Component{
-    render() {
-        return <CountContext.Consumer>
-            {
-                count=><div>{count}</div>
-            }
-        </CountContext.Consumer>
-    }
-}
-
-class Bar extends React.Component{
-    static contextType = CountContext;
-    render() {
-        const count = this.context;
-        return <h1>{count}</h1>
-    }
-}
-
-function Counter() {
-    const count = useContext(CountContext);
-    return <h1>{count}</h1>
-}
+const Counter = memo(function Counter(props) {
+    console.log("Counter render");
+    return <h1 onClick={props.onClick}>{props.count}</h1>
+})
 
 function App(props) {
     const [count, setCount] = useState( 0);
+    const [clickCount, setClickCount] = useState( 0);
+
+    const double = useMemo(()=>{
+        return count * 2;
+    },[count === 3]);
+
+    const onClick = useCallback(() =>{
+        console.log("Click");
+        setClickCount((clickCount)=>clickCount+1);
+    },[]);
+
+    //如果useMemo返回的是一个函数就等价于useCallback
+
     return <div>
         <button
             type="button"
@@ -35,13 +28,9 @@ function App(props) {
                 setCount(count + 1)
             }}
         >
-            Click({count})
+            Click({count}), double({double})
         </button>
-        <CountContext.Provider value={count}>
-            <Foo/>
-            <Bar/>
-            <Counter />
-        </CountContext.Provider>
+            <Counter count={double} onClick={onClick}/>
     </div>;
 }
 
