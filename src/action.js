@@ -1,6 +1,6 @@
 export function createSet(payload) {
     return {
-        type:'set',
+        type: 'set',
         payload,
     }
 }
@@ -8,19 +8,21 @@ export function createSet(payload) {
 
 export function createAdd(payload) {
     return {
-        type:'add',
+        type: 'add',
         payload,
     }
 }
+
 export function createRemove(payload) {
     return {
-        type:'remove',
+        type: 'remove',
         payload,
     }
 }
+
 export function createToggle(payload) {
     return {
-        type:'toggle',
+        type: 'toggle',
         payload,
     }
 }
