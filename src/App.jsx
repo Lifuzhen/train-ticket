@@ -3,7 +3,7 @@ import './App.css';
 import {createSet, createAdd, createRemove, createToggle} from "./action";
 import reducer from "./reducers";
 
-let idSeq = Date.now();
+
 
 
 function bindActionCreators(actionCreators, dispatch) {
@@ -30,11 +30,7 @@ const Control = memo(function Control(props) {
         if (newText.length === 0) {
             return;
         } else {
-            addTodo({
-                id: ++idSeq,
-                text: newText,
-                complete: false,
-            })
+            addTodo(newText);
         }
         inputRef.current.value = '';
 
@@ -94,9 +90,21 @@ const Todos = memo(function Todos(props) {
 
 const LS_KEY = '_$-todos_';
 
+let  store ={
+    todos:[],
+    incrementCount: 0,
+};
+
 function TodoList() {
     const [todos, setTodos] = useState([]);
     const [incrementCount, setIncrementCount] = useState(0);
+
+    useEffect(()=>{
+        Object.assign(store, {
+            todos,
+            incrementCount
+        })
+    },[todos, incrementCount]);
 
     const addTodo = useCallback((todo) => {
         setTodos(todos => [...todos, todo]);
@@ -116,21 +124,22 @@ function TodoList() {
         }))
     }, []);
 
-    const dispatch = useCallback((action) => {
-        const state = {
-            todos,
-            incrementCount,
-        };
+    const dispatch = (action) => {
         const setters = {
             todos: setTodos,
             incrementCount: setIncrementCount
         };
-        const newState = reducer(state, action);
+
+        if('function' === typeof action){
+            action(dispatch, ()=>store);
+            return;
+        }
+
+        const newState = reducer(store, action);
         for(let key in newState){
             setters[key](newState[key]);
         }
-
-    }, [todos, incrementCount]);
+    };
 
 
     useEffect(() => {
